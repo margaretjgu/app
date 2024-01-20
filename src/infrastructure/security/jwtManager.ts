@@ -1,11 +1,20 @@
 import * as jwt from 'jsonwebtoken';
+import { getSecretValue } from 'src/infrastructure/security/secretsManagerClient';
 
-const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key';
+let cachedSecret: string | undefined;
+const getJwtSecret = async (): Promise<string> => {
+  if (!cachedSecret) {
+    cachedSecret = await getSecretValue('hugo/jwt'); // TODO - save as global env var
+  }
+  return cachedSecret;
+};
 
-export const createToken = (userId: string): string => {
+export const createToken = async (userId: string): Promise<string> => {
+  const secretKey = await getJwtSecret();
   return jwt.sign({ userId }, secretKey, { expiresIn: '1h' });
 };
 
-export const verifyToken = (token: string): jwt.JwtPayload | string => {
+export const verifyToken = async (token: string): Promise<string | jwt.JwtPayload> => {
+  const secretKey = await getJwtSecret();
   return jwt.verify(token, secretKey);
 };
