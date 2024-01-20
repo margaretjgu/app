@@ -3,7 +3,7 @@ service: hugo-backend
 provider:
   name: aws
   runtime: nodejs14.x
-  region: us-east-1
+  region: us-west-2
 
 functions:
   registerUser:
