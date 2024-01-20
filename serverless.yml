@@ -1,0 +1,24 @@
+service: hugo-backend
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+functions:
+  registerUser:
+    handler: src/handlers/registerUser.handler
+    events:
+      - http:
+          method: post
+          path: users/register
+  loginUser:
+    handler: src/handlers/loginUser.handler
+    events:
+      - http:
+          method: post
+          path: users/login
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
