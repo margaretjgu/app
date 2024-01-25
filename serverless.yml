@@ -4,16 +4,26 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action: secretsmanager:GetSecretValue
+      Resource: 
+        - !Sub 'arn:aws:secretsmanager:${self:provider.region}:${self:custom.awsAccountId}:secret:hugo/jwt'
+  environment:
+    AWS_ACCOUNT_ID: '064339330257'
+    USERS_TABLE: Users
+    GROUPS_TABLE: Groups
+    TASKS_TABLE: Tasks
 
 functions:
   registerUser:
-    handler: src/handlers/registerUser.handler
+    handler: src/adapters/lambda/registerUser.handler
     events:
       - http:
           method: post
           path: users/register
   loginUser:
-    handler: src/handlers/loginUser.handler
+    handler: src/adapters/lambda/loginUser.handler
     events:
       - http:
           method: post
@@ -22,3 +32,9 @@ functions:
 plugins:
   - serverless-webpack
   - serverless-offline
+
+custom:
+  awsAccountId: '064339330257'
+  webpack:
+    webpackConfig: './webpack.config.js'
+    includeModules: true
