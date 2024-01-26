@@ -29,7 +29,7 @@ module.exports = {
         },
     },
     optimization: {
-        minimize: false // Update to 'true' if u want webpack to minimize your code
+        minimize: true // Update to 'true' if u want webpack to minimize your code
     },
     performance: {
         hints: false

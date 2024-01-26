@@ -1,24 +1,64 @@
+// src/domain/repositories/userRepository.ts
 import { DynamoDB } from 'aws-sdk';
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
 export const userRepository = {
-  createUser: async (username: string, email: string, passwordHash: string, userId: string) => {
+  createUser: async (username: string, name: string, email: string, passwordHash: string, userId: string) => {
     const params = {
       TableName: process.env.USERS_TABLE,
-      Item: { userId, username, email, passwordHash },
+      Item: { userId, username, name, email, passwordHash },
     };
     await dynamoDb.put(params).promise();
     return userId;
   },
+
   getUserByEmail: async (email: string) => {
     const params = {
       TableName: process.env.USERS_TABLE,
-      IndexName: 'EmailIndex', // Make sure to create this index in DynamoDB
+      IndexName: 'EmailIndex',
       KeyConditionExpression: 'email = :email',
       ExpressionAttributeValues: { ':email': email },
     };
     const result = await dynamoDb.query(params).promise();
     return result.Items[0];
+  },
+
+  updateName: async (userId: string, newName: string) => {
+    const params = {
+      TableName: process.env.USERS_TABLE,
+      Key: { userId },
+      UpdateExpression: 'set #name = :newName',
+      ExpressionAttributeNames: { '#name': 'name' },
+      ExpressionAttributeValues: { ':newName': newName },
+      ReturnValues: 'UPDATED_NEW',
+    };
+    return await dynamoDb.update(params).promise();
+  },
+
+  invalidateToken: async (token: string) => {
+    const ttl = Math.floor(Date.now() / 1000) + 3600; // JWT has a 1-hour expiration
+    const params = {
+      TableName: process.env.TOKEN_DENYLIST_TABLE,
+      Item: { token, ttl },
+    };
+    await dynamoDb.put(params).promise();
+  },
+
+  isTokenInvalidated: async (token: string) => {
+    const params = {
+      TableName: process.env.TOKEN_DENYLIST_TABLE,
+      Key: { token },
+    };
+    const response = await dynamoDb.get(params).promise();
+    return !!response.Item;
+  },
+
+  deleteAccount: async (userId: string) => {
+    const params = {
+      TableName: process.env.USERS_TABLE,
+      Key: { userId },
+    };
+    return await dynamoDb.delete(params).promise();
   },
 };
