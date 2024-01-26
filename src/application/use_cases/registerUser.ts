@@ -2,7 +2,7 @@ import { userRepository } from 'src/domain/repositories/userRepository';
 import { createToken } from 'src/infrastructure/security/jwtManager';
 import { hashPassword, verifyPassword } from 'src/infrastructure/security/passwordManager';
 
-export const registerUser = async (username: string, email: string, password: string, userId: string) => {
+export const registerUser = async (username: string, name: string, email: string, password: string, userId: string) => {
   const existingUser = await userRepository.getUserByEmail(email);
 
   if (existingUser) {
@@ -18,7 +18,7 @@ export const registerUser = async (username: string, email: string, password: st
   } else {
     // If user does not exist, create a new user
     const hashedPassword = await hashPassword(password);
-    await userRepository.createUser(username, email, hashedPassword, userId);
+    await userRepository.createUser(username, name, email, hashedPassword, userId);
 
     // Create JWT token
     const token = createToken(userId);

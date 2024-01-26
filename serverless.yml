@@ -10,10 +10,13 @@ provider:
       Resource: 
         - !Sub 'arn:aws:secretsmanager:${self:provider.region}:${self:custom.awsAccountId}:secret:hugo/jwt'
   environment:
-    AWS_ACCOUNT_ID: '064339330257'
     USERS_TABLE: Users
     GROUPS_TABLE: Groups
     TASKS_TABLE: Tasks
+    TOKEN_DENYLIST_TABLE: TokenDenylist
+
+resources:
+  - ${file(config/resources/dynamoDb.yml)}
 
 functions:
   registerUser:
@@ -28,6 +31,13 @@ functions:
       - http:
           method: post
           path: users/login
+  logoutUser:
+    handler: src/adapters/lambda/logoutUser.handler
+    events:
+      - http:
+          method: post
+          path: users/logout
+          cors: true
 
 plugins:
   - serverless-webpack

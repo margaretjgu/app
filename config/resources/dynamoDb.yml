@@ -1,0 +1,57 @@
+Resources:
+  UsersTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: ${self:provider.environment.USERS_TABLE}
+      AttributeDefinitions:
+        - AttributeName: "userId"
+          AttributeType: "S"
+        - AttributeName: "email"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "userId"
+          KeyType: "HASH"
+      GlobalSecondaryIndexes:
+        - IndexName: "EmailIndex"
+          KeySchema:
+            - AttributeName: "email"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+      BillingMode: PAY_PER_REQUEST
+
+  GroupsTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: ${self:provider.environment.GROUPS_TABLE}
+      AttributeDefinitions:
+        - AttributeName: "groupId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "groupId"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+
+  TasksTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: ${self:provider.environment.TASKS_TABLE}
+      AttributeDefinitions:
+        - AttributeName: "taskId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "taskId"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+
+  TokenDenylistTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: ${self:provider.environment.TOKEN_DENYLIST_TABLE}
+      AttributeDefinitions:
+        - AttributeName: "tokenId"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "tokenId"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
