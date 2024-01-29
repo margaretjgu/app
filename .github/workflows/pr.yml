@@ -13,10 +13,12 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Node.js
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: '14'
-    - run: npm ci
-    - run: npm run test
+      - run: npm ci
+      - run: npm run test
