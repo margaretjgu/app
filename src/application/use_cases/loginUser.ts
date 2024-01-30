@@ -5,9 +5,15 @@ import { verifyPassword } from 'src/infrastructure/security/passwordManager';
 export const loginUser = async (email: string, password: string) => {
   // Retrieve the user from the repository (DB)
   const user = await userRepository.getUserByEmail(email);
-  
+
+  // Check if the user exists
+  if (!user) {
+    throw new Error('User not found');
+  }
+
   // Verify the password
   const passwordIsValid = await verifyPassword(password, user.passwordHash);
+
   if (!passwordIsValid) {
     throw new Error('Invalid credentials');
   }
