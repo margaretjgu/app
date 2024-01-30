@@ -12,9 +12,12 @@
     "removeComments": true,
     "sourceMap": true,
     "target": "ES2020",
-    "outDir": "lib"
+    "outDir": "lib",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true
   },
-  "include": ["src/**/*.ts", "serverless.yml"],
+  "include": ["src/**/*.ts", "serverless.yml", "tests/**/*"],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",

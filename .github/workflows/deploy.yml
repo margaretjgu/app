@@ -21,6 +21,8 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
+      
+      - run: npm test
 
       - name: Deploy to AWS via Serverless
         env:
