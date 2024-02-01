@@ -67,4 +67,15 @@ export const userRepository = {
     };
     return await dynamoDb.delete(params).promise();
   },
+  createProfilePicture: async (userId: string, pictureUrl: string) => {
+    const params = {
+      TableName: process.env.USERS_TABLE as string,
+      Key: { userId },
+      UpdateExpression: 'set profilePicture = :url',
+      ExpressionAttributeValues: {
+        ':url': pictureUrl,
+      },
+    };
+    await dynamoDb.update(params).promise();
+  },
 };

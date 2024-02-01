@@ -9,14 +9,19 @@ provider:
       Action: secretsmanager:GetSecretValue
       Resource: 
         - !Sub 'arn:aws:secretsmanager:${self:provider.region}:${self:custom.awsAccountId}:secret:hugo/jwt'
+    - Effect: 'Allow'
+      Action: ['s3:PutObject', 's3:GetObject']
+      Resource: 'arn:aws:s3:::${self:custom.imagesBucket}/*'
   environment:
     USERS_TABLE: Users
     GROUPS_TABLE: Groups
     TASKS_TABLE: Tasks
     TOKEN_DENYLIST_TABLE: TokenDenylist
+    IMAGES_BUCKET: your-s3-bucket-name
 
 resources:
   - ${file(config/resources/dynamoDb.yml)}
+  - ${file(config/resources/s3.yml)}
 
 functions:
   registerUser:
@@ -38,6 +43,13 @@ functions:
           method: post
           path: users/logout
           cors: true
+  getPresignedUrl:
+    handler: src/adapters/lambda/getPresignedUrl.handler
+    events:
+      - http:
+          path: users/getPresignedUrl
+          method: post
+          cors: true
 
 plugins:
   - serverless-webpack
@@ -45,6 +57,7 @@ plugins:
 
 custom:
   awsAccountId: '064339330257'
+  imagesBucket: lazy-bucket
   webpack:
     webpackConfig: './webpack.config.js'
     includeModules: true
