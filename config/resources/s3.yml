@@ -1,0 +1,20 @@
+Resources:
+  ImagesBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: ${self:custom.imagesBucket}
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      CorsConfiguration:
+        CorsRules:
+          - AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - DELETE
+              - HEAD
+            AllowedOrigins:
+              - '*'
+            AllowedHeaders:
+              - '*'
