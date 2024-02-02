@@ -15,7 +15,9 @@
     "outDir": "lib",
     "module": "commonjs",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*.ts", "serverless.yml", "tests/**/*"],
   "exclude": [
